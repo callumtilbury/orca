@@ -1,3 +1,4 @@
+import { registerNativePluginEditor } from '../plugins/native-editor-plugin-state'
 import { useCallback, useLayoutEffect, useRef } from 'react'
 import type { OnMount } from '@monaco-editor/react'
 import { useAppStore } from '@/store/index'
@@ -149,6 +150,10 @@ export function useMonacoEditorMount(params: MonacoEditorMountParams): OnMount {
         }
       }
 
+      const unregisterNativePluginEditor = passiveMirror
+        ? () => {}
+        : registerNativePluginEditor(editorInstance, () => fileIdRef.current)
+
       setupCopy(editorInstance, monaco, filePath, propsRef)
       unregisterFileSearchSelectionRef.current?.()
       unregisterFileSearchSelectionRef.current = registerFileSearchSelectedTextProvider(() => {
@@ -213,6 +218,7 @@ export function useMonacoEditorMount(params: MonacoEditorMountParams): OnMount {
         conflictDecorationsRef.current?.clear()
         conflictDecorationsRef.current = null
         uninstallE2EProbe()
+        unregisterNativePluginEditor()
         editorRef.current = null
         setMountedEditor(null)
         setCommentPopover(null)

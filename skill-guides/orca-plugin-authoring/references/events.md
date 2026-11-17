@@ -16,6 +16,8 @@ List each in `contributes.events` (`{ "on": "<event>" }`), with `main`, the `tru
   `{ context: { workspaceId?: string; branch: string; displayName: string; terminals: { id: string; title?: string }[] } | null }`
 - `editor.typography.changed` (no capability; since 1.4.257): What Orca's file editor uses changed (a setting or the editor zoom); the payload is what `editor.readTypography` now answers. Needs no capability.
   `{ fontFamily: string; cssFontFamily: string; fontSize: number; fontWeight: string; lineHeight: number; fontLigatures: boolean; wordWrap: "on" | "off"; minimap: boolean }`
+- `editor.changed` (capability `editor:read`; since 1.4.262): The active native editor, its text, or its selection changed. A locate reason reports a double-click in the source. Call editor.readActive for the current snapshot; requires editor:read.
+  `{ documentId: string | null; reason: "active" | "content" | "selection" | "locate" }`
 
 ## Frame events (`orca.on(event, handler)` in HTML panels and custom editors)
 

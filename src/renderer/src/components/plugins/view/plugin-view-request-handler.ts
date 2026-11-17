@@ -1,3 +1,7 @@
+import {
+  readNativePluginDocument,
+  revealNativePluginRange
+} from '@/components/editor/plugins/native-editor-plugin-state'
 import { pluginPanelTabKey } from '../../../../../shared/plugins/frames/plugin-tab-key'
 import {
   PLUGIN_VIEW_NO_WORKSPACE_CODE,
@@ -234,6 +238,14 @@ export async function handlePluginViewRequest(
         return await replayPluginPanel(request)
       case 'capture-chrome':
         return await captureChrome(request)
+      case 'read-native-editor':
+        return { requestId: request.requestId, ok: true, document: readNativePluginDocument() }
+      case 'reveal-native-editor':
+        return {
+          requestId: request.requestId,
+          ok: true,
+          revealed: revealNativePluginRange(request.documentId, request.range)
+        }
       case 'open-file':
         return openWorkspaceFile(request)
       case 'run-action':

@@ -1,3 +1,4 @@
+import type { PluginNativeEditorDocument } from '../../../shared/plugins/workers/plugin-host-api-native-editor'
 import {
   PLUGIN_VIEW_NO_WORKSPACE_CODE,
   type PluginViewReply,
@@ -8,6 +9,8 @@ import { PluginHostCallError } from '../workers/host-api/plugin-host-call-scope'
 
 /** What a worker's `editor.open` and `commands.run` ask of Orca's window. */
 export type PluginHostRendererActions = {
+  readActiveEditor(): Promise<PluginNativeEditorDocument | null>
+  revealEditor(documentId: string, range: PluginNativeEditorDocument['selection']): Promise<boolean>
   openFile(worktreeId: string, relativePath: string): Promise<void>
   runAction(action: PluginCommandAliasActionId): Promise<void>
   openFolderWorkspace(folderWorkspaceId: string): Promise<void>
@@ -25,7 +28,7 @@ export function setPluginHostRendererRequest(next: PluginHostRendererRequest | n
   request = next
 }
 
-async function ask(body: PluginViewRequestBody): Promise<void> {
+async function ask(body: PluginViewRequestBody): Promise<Extract<PluginViewReply, { ok: true }>> {
   const pending = request?.(body) ?? null
   if (!pending) {
     throw new PluginHostCallError('unavailable', 'Orca has no window open to do this in')
@@ -41,16 +44,20 @@ async function ask(body: PluginViewRequestBody): Promise<void> {
       reply.code === PLUGIN_VIEW_NO_WORKSPACE_CODE || reply.code === 'action_unavailable'
     throw new PluginHostCallError(unavailable ? 'unavailable' : 'action_failed', reply.message)
   }
+  return reply
 }
 
 export function getPluginHostRendererActions(): PluginHostRendererActions | null {
   return request
     ? {
+        readActiveEditor: async () => (await ask({ kind: 'read-native-editor' })).document ?? null,
+        revealEditor: async (documentId, range) =>
+          (await ask({ kind: 'reveal-native-editor', documentId, range })).revealed === true,
         openFile: (worktreeId, relativePath) =>
-          ask({ kind: 'open-file', worktreeId, relativePath }),
-        runAction: (action) => ask({ kind: 'run-action', action }),
+          ask({ kind: 'open-file', worktreeId, relativePath }).then(() => {}),
+        runAction: (action) => ask({ kind: 'run-action', action }).then(() => {}),
         openFolderWorkspace: (folderWorkspaceId) =>
-          ask({ kind: 'open-folder-workspace', folderWorkspaceId })
+          ask({ kind: 'open-folder-workspace', folderWorkspaceId }).then(() => {})
       }
     : null
 }

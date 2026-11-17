@@ -42,6 +42,17 @@ function failureDetail(error: unknown): string {
 }
 
 export const PLUGIN_WORKSPACE_ACTION_HANDLERS = {
+  'editor.readActive': bind(api['editor.readActive'], async (_params, { services, scope }) => {
+    scope.assertActive()
+    return renderer(services).readActiveEditor()
+  }),
+  'editor.reveal': bind(
+    api['editor.reveal'],
+    async ({ documentId, range }, { services, scope }) => {
+      scope.assertActive()
+      return { revealed: await renderer(services).revealEditor(documentId, range) }
+    }
+  ),
   'workspace.list': bind(api['workspace.list'], async (params, { services }) =>
     listPluginWorkspaces(
       rpc(services),

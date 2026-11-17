@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { PLUGIN_NATIVE_EDITOR_SINCE } from '../workers/plugin-host-api-native-editor'
 import { PLUGIN_ENUM_SINCE_KEY } from '../manifest/plugin-engine-floor-keys'
 import { PLUGIN_APPEARANCE_SINCE } from '../workers/plugin-host-api-appearance'
 import { PLUGIN_HOST_API_1_8_SINCE } from '../workers/plugin-host-api-1-8'
@@ -14,6 +15,7 @@ import {
  * host boundaries enforce them across desktop, headless serve and relay. Scoped kinds remain future work. */
 
 export const PLUGIN_CAPABILITY_KINDS = [
+  'editor:read',
   'workspace:read',
   'workspace:write',
   'agent:read',
@@ -35,6 +37,7 @@ export type PluginCapabilityKind = (typeof PLUGIN_CAPABILITY_KINDS)[number]
 
 /** The release each capability arrived in; engines.orca must cover every one a plugin asks for. */
 export const PLUGIN_CAPABILITY_SINCE: Record<PluginCapabilityKind, string> = {
+  'editor:read': PLUGIN_NATIVE_EDITOR_SINCE,
   'workspace:read': PLUGIN_SCHEMA_SINCE_V1,
   'workspace:write': PLUGIN_HOST_ACTIONS_SINCE,
   'agent:read': PLUGIN_MANIFEST_V2_SINCE,
@@ -76,6 +79,8 @@ export type PluginCapability = z.infer<typeof pluginCapabilitySchema>
 
 /** Consent copy shown verbatim; describe only what the host actually enforces. */
 export const PLUGIN_CAPABILITY_DESCRIPTIONS: Record<PluginCapabilityKind, string> = {
+  'editor:read':
+    'Read the active native editor document, including unsaved text, file paths, and selections, and receive editor interaction events',
   'workspace:read':
     'Read your projects and workspaces (names, branches, paths and agent status) and the terminals in them, and get notified when they change',
   'workspace:write':

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { pluginNativeEditorChangedSchema } from '../workers/plugin-host-api-native-editor'
 import { AGENT_STATUS_STATES } from '../../agent-status/contracts/agent-status-types'
 import { AGENT_TURN_OUTCOMES } from '../../agent-status/lifecycle/agent-turn-outcome'
 import type { PluginEventName } from '../manifest/plugin-manifest'
@@ -92,7 +93,8 @@ export const PLUGIN_EVENT_PAYLOAD_SCHEMAS = {
   'workspace.removed': workspaceRemovedPayloadSchema,
   'agent.status.changed': agentStatusChangedPayloadSchema,
   'workspace.changed': workspaceChangedPayloadSchema,
-  'editor.typography.changed': pluginEditorTypographySchema
+  'editor.typography.changed': pluginEditorTypographySchema,
+  'editor.changed': pluginNativeEditorChangedSchema
 } satisfies Record<PluginEventName, z.ZodType>
 
 /** One line per event for the generated reference and author typings. */
@@ -105,6 +107,8 @@ export const PLUGIN_EVENT_SUMMARIES: Record<PluginEventName, string> = {
     'An agent in a terminal pane changed status; `workspaceId` is null when Orca cannot tie the pane to a workspace, `workspaceListId` (host API 1.7) is the id `workspace.list` gives that workspace, `terminalId` names its terminal when Orca lists it, and `sessionId` (host API 1.8) is what `agent.resume` takes.',
   'workspace.changed':
     'The focused workspace changed, or its terminals were opened, closed or renamed; `context` is what `workspace.readContext` now answers, its `workspaceId` included. Each new subscriber first gets the current context.',
+  'editor.changed':
+    'The active native editor, its text, or its selection changed. A locate reason reports a double-click in the source. Call editor.readActive for the current snapshot; requires editor:read.',
   'editor.typography.changed':
     "What Orca's file editor uses changed (a setting or the editor zoom); the payload is what `editor.readTypography` now answers. Needs no capability."
 }

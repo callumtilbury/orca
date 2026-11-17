@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { pluginNativeEditorDocumentSchema } from '../../../shared/plugins/workers/plugin-host-api-native-editor'
 import type { PluginViewReply } from '../../../shared/plugins/view/plugin-view-protocol'
 import {
   PLUGIN_SHOT_MAX_ACTS,
@@ -33,7 +34,9 @@ export const pluginViewReplySchema: z.ZodType<PluginViewReply> = z.union([
     requestId: z.string().max(128),
     ok: z.literal(true),
     panel: drawnPanelSchema.optional(),
-    restored: z.boolean().optional()
+    restored: z.boolean().optional(),
+    document: pluginNativeEditorDocumentSchema.nullable().optional(),
+    revealed: z.boolean().optional()
   }),
   z.object({
     requestId: z.string().max(128),

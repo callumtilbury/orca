@@ -208,9 +208,9 @@
         },
         "events": {
           "default": [],
-          "description": "Events delivered to the plugin worker. At most 5.",
+          "description": "Events delivered to the plugin worker. At most 6.",
           "x-orca-since": "1.4.160",
-          "maxItems": 5,
+          "maxItems": 6,
           "type": "array",
           "items": {
             "$ref": "#/$defs/EventContribution"
@@ -737,7 +737,8 @@
             "workspace.removed",
             "agent.status.changed",
             "workspace.changed",
-            "editor.typography.changed"
+            "editor.typography.changed",
+            "editor.changed"
           ],
           "description": "Event delivered to the plugin worker.",
           "x-orca-since": "1.4.160",
@@ -746,7 +747,8 @@
             "workspace.removed": "1.4.245",
             "agent.status.changed": "1.4.160",
             "workspace.changed": "1.4.246",
-            "editor.typography.changed": "1.4.257"
+            "editor.typography.changed": "1.4.257",
+            "editor.changed": "1.4.262"
           }
         }
       },
@@ -754,7 +756,7 @@
         "on"
       ],
       "additionalProperties": false,
-      "description": "An event subscription. Requires `main`, the `trusted-worker` execution profile and the capability of the event's domain: `workspace:read` for workspace events, `agent:read` for agent events. Editor events need no capability."
+      "description": "An event subscription. Requires `main`, the `trusted-worker` execution profile and the capability of the event's domain: `workspace:read` for workspace events, `agent:read` for agent events. `editor.changed` requires `editor:read`; typography events need no capability."
     },
     "HookContribution": {
       "type": "object",
@@ -1571,6 +1573,7 @@
         "kind": {
           "type": "string",
           "enum": [
+            "editor:read",
             "workspace:read",
             "workspace:write",
             "agent:read",
@@ -1590,6 +1593,7 @@
           "description": "Capability granted on user consent.",
           "x-orca-since": "1.4.160",
           "x-orca-enum-since": {
+            "editor:read": "1.4.262",
             "workspace:read": "1.4.160",
             "workspace:write": "1.4.248",
             "agent:read": "1.4.245",

@@ -45,6 +45,9 @@ vi.mock('../markdown-source-tools/monaco/monaco-markdown-doc-link-decorations', 
 vi.mock('../markdown-source-tools/monaco/monaco-markdown-doc-completions', () => ({
   ensureMarkdownDocCompletionProvider: vi.fn()
 }))
+vi.mock('../plugins/native-editor-plugin-state', () => ({
+  registerNativePluginEditor: () => vi.fn()
+}))
 vi.mock('./monaco-e2e-probe', () => ({ installMonacoE2EProbe: () => vi.fn() }))
 vi.mock('./monaco-editor-input-bindings', () => ({
   installMonacoEditorInputBindings: () => ({ disposeInputBindings: vi.fn() })

@@ -14311,7 +14311,8 @@
           "agentStatusChanged": "When an agent’s status changes",
           "detail": "Background code runs",
           "workspaceChanged": "When you switch workspace or its terminals change",
-          "editorTypographyChanged": "When the editor font or zoom changes"
+          "editorTypographyChanged": "When the editor font or zoom changes",
+          "editorChanged": "When the native editor document or selection changes"
         },
         "pluginInstallAction": {
           "installed": "{{value0}} installed",

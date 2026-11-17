@@ -4,6 +4,7 @@
  * renderer state changes: nothing here shows, raises or focuses a window.
  */
 
+import type { PluginNativeEditorDocument } from '../workers/plugin-host-api-native-editor'
 import type { PluginDeclarativeNode } from '../declarative/plugin-declarative-catalog'
 import type { PluginShotAct, PluginShotActResult } from './plugin-shot-acts'
 import type { PluginCommandAliasActionId } from '../contributions/plugin-command-actions'
@@ -72,6 +73,12 @@ export type PluginViewRequestBody =
   /** Puts back the width and theme a capture changed, and undoes editor capture `captureId`. */
   | { kind: 'end-capture'; captureId?: string }
   /** A plugin worker's `editor.open`: a workspace file, by path inside the workspace. */
+  | { kind: 'read-native-editor' }
+  | {
+      kind: 'reveal-native-editor'
+      documentId: string
+      range: PluginNativeEditorDocument['selection']
+    }
   | { kind: 'open-file'; worktreeId: string; relativePath: string }
   /** A plugin worker's `commands.run`: always the built-in action, never a plugin's override. */
   | { kind: 'run-action'; action: PluginCommandAliasActionId }
@@ -113,7 +120,14 @@ export type PluginViewDrawnPanel = {
 
 export type PluginViewReply =
   /** `restored`: on `end-capture` after `--act`, whether the panel's atoms were put back. */
-  | { requestId: string; ok: true; panel?: PluginViewDrawnPanel; restored?: boolean }
+  | {
+      requestId: string
+      ok: true
+      panel?: PluginViewDrawnPanel
+      restored?: boolean
+      document?: PluginNativeEditorDocument | null
+      revealed?: boolean
+    }
   | { requestId: string; ok: false; code: string; message: string }
 
 /** The renderer could not show the view; `code` is a stable reason callers may branch on. */

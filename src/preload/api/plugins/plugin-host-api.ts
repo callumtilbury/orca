@@ -1,3 +1,4 @@
+import type { PluginNativeEditorChanged } from '../../../shared/plugins/workers/plugin-host-api-native-editor'
 import type { PluginHostImages } from '../../../shared/plugins/images/plugin-image-url'
 import type { EditorSaveHookDecision } from '../../../shared/plugins/events/plugin-editor-save-hook'
 import type { PluginUpdateAccessGrowth } from '../../../shared/plugins/approval/plugin-update-access-growth'
@@ -263,6 +264,7 @@ export type PluginsApi = {
   /** What workers set with `statusBar.update`. Desktop only; older hosts reject. */
   statusBarState?: () => Promise<PluginStatusBarOverrides>
   /** Runs plugins' `editor.save.before` on a buffer about to be saved. Older hosts lack it. */
+  nativeEditorChanged?: (event: PluginNativeEditorChanged) => Promise<void>
   editorSaveHook?: (event: {
     workspaceId: string | null
     path: string

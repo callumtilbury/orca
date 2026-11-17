@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { PLUGIN_NATIVE_EDITOR_SINCE } from '../workers/plugin-host-api-native-editor'
 import { PLUGIN_ENUM_SINCE_KEY } from '../manifest/plugin-engine-floor-keys'
 import {
   pluginFieldDoc,
@@ -16,7 +17,8 @@ export const PLUGIN_EVENT_NAMES = [
   'workspace.removed',
   'agent.status.changed',
   'workspace.changed',
-  'editor.typography.changed'
+  'editor.typography.changed',
+  'editor.changed'
 ] as const
 export const PLUGIN_EVENT_SUBSCRIPTION_LIMIT = PLUGIN_EVENT_NAMES.length
 
@@ -28,7 +30,8 @@ export const PLUGIN_EVENT_SINCE: Record<PluginEventName, string> = {
   'workspace.removed': PLUGIN_MANIFEST_V2_SINCE,
   'agent.status.changed': PLUGIN_SCHEMA_SINCE_V1,
   'workspace.changed': PLUGIN_PANEL_BRIDGE_SINCE,
-  'editor.typography.changed': PLUGIN_EDITOR_TYPOGRAPHY_SINCE
+  'editor.typography.changed': PLUGIN_EDITOR_TYPOGRAPHY_SINCE,
+  'editor.changed': PLUGIN_NATIVE_EDITOR_SINCE
 }
 
 /** Format 1 event names, rewritten on parse and still dispatched to handlers registered under them. */
@@ -44,7 +47,8 @@ export const PLUGIN_EVENT_CAPABILITY: Record<PluginEventName, PluginCapabilityKi
   'workspace.removed': 'workspace:read',
   'agent.status.changed': 'agent:read',
   'workspace.changed': 'workspace:read',
-  'editor.typography.changed': null
+  'editor.typography.changed': null,
+  'editor.changed': 'editor:read'
 }
 
 /** Whether a plugin with these grants (null: not approved) may hear `event`. */
@@ -67,7 +71,7 @@ export const pluginEventContributionSchema = z
   .meta({
     id: 'EventContribution',
     description:
-      "An event subscription. Requires `main`, the `trusted-worker` execution profile and the capability of the event's domain: `workspace:read` for workspace events, `agent:read` for agent events. Editor events need no capability."
+      "An event subscription. Requires `main`, the `trusted-worker` execution profile and the capability of the event's domain: `workspace:read` for workspace events, `agent:read` for agent events. `editor.changed` requires `editor:read`; typography events need no capability."
   })
 
 export type PluginEventContribution = z.infer<typeof pluginEventContributionSchema>
